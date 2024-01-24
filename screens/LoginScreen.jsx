@@ -1,17 +1,51 @@
-import { Button, Pressable, SafeAreaView, Text, TextInput, View } from "react-native"
+import react from "react"
+import { Alert, Pressable, SafeAreaView, Text, TextInput, View } from "react-native"
 import { MaterialIcons } from "@expo/vector-icons"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useNavigation } from "@react-navigation/native"
+import axios from "axios"
+import AsyncStorage from "@react-native-async-storage/async-storage"
 
 const LoginScreen = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const navigation = useNavigation()
+
+    useEffect(() => {
+        const checkLoginStatus = async () => {
+            try {
+                const token = await AsyncStorage.getItem("authToken")
+                if (token) {
+                    setTimeout(() => {
+                        navigation.replace('Home')
+                    }, 400)
+                }
+            } catch (err) {
+                console.log('Error :', err)
+            }
+        }
+        checkLoginStatus()
+    }, [])
+
     const handleNavigateToRegister = () => {
         navigation.navigate("Register")
     }
-    const handleLogin = () => {
 
+    const handleLogin = () => {
+        const user = {
+            email: email,
+            password: password
+        }
+        axios.post('http://localhost:3000/login', user).then((res) => {
+            console.log(res)
+            console.log(res.data)
+            const token = res.data.token
+            AsyncStorage.setItem('authToken', token)
+            navigation.navigate('Home')
+        }).catch((err) => {
+            Alert.alert('Login failed')
+            console.log('Error :', err)
+        })
     }
     return (
         <SafeAreaView className="container px-4 w-full mx-auto">
@@ -25,9 +59,9 @@ const LoginScreen = () => {
                 />
                 <TextInput
                     value={email}
-                    onChangeText={(e) =>setEmail(e)}
+                    onChangeText={(e) => setEmail(e)}
                     className="text-base"
-                    placeholder="Enter username"
+                    placeholder="Enter email"
                 />
             </View>
             <View className="flex flex-row items-end gap-2 bg-white mx-8 p-2 pb-4 rounded-[8px]">
