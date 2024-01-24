@@ -41,18 +41,18 @@ const userSchema = new mongoose.Schema({
       ref: "User"
     }
   ],
-    Followers: [
+  followers: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User"
     }
-    ],
-    verified: {
-        type: Boolean,
-        default: false
-    },
-    verificationToken: String,
-})
+  ],
+  verified: {
+    type: Boolean,
+    default: false
+  },
+  verificationToken: String
+});
 
-const User = mongoose.model("User", userSchema)
-module.exports = User
+const User = mongoose.model("User", userSchema);
+module.exports = User;

@@ -6,8 +6,8 @@ const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
 const cors = require("cors");
 
-const User = require("../api/models/user");
-const Post = require("../api/models/post");
+const User = require("./models/user");
+const Post = require("./models/post");
 
 const app = express();
 const port = 3000;
@@ -35,16 +35,20 @@ app.listen(port, () => {
   console.log(`Server running at port ${port}`);
 });
 
+app.get("/", (req, res) => {
+  res.send("Local host ");
+});
+
 // register
 app.post("/register", async (req, res) => {
   try {
     const { name, email, password } = req.body;
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({email});
     if (existingUser) {
       return res.status(400).json({ message: "Email already registered" });
     }
     // create new user here
-    const newUser = new User({ name, email, password });
+    const newUser = new User({name,email,password});
     // store verification token
     newUser.verificationToken = crypto.randomBytes(20).toString("hex");
     // save user to db
@@ -62,13 +66,13 @@ app.post("/register", async (req, res) => {
   }
 });
 
-const sendVerificationEmail = async ({ email, verificationToken }) => {
+const sendVerificationEmail = async (email, verificationToken) => {
     // create nodemailer transporter 
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
         user: "hanhee1406@gmail.com",
-        pass: "avli wgjx jzyz xhik"
+        pass: "avliwgjxjzyzxhik"
       }
     });
     // compose email message
@@ -85,10 +89,10 @@ const sendVerificationEmail = async ({ email, verificationToken }) => {
     }
 }
 
-app.post('/verify/:token', async (Req, res) => {
+app.get('/verify/:token', async (req, res) => {
     try {
         const token = req.params.token
-        const user = await User.findOne({ verificationToken })
+        const user = await User.findOne({ verificationToken:token })
         if (!user) {
             return res.status(400).json({message: 'Invalid token'})
         }
@@ -113,7 +117,7 @@ const secrectKey = generateSecretKey()
 app.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body
-        const user = await User.findOne({ email })
+        const user = await User.findOne({email})
         if (!user) {
             return res.status(404).json({message: "Invalid email"})
         }

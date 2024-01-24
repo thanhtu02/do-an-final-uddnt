@@ -42,7 +42,7 @@ const RegisterScreen = () => {
                 />
                 <TextInput
                     value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    onChangeText={(e) => setName(e)}
                     className="text-base"
                     placeholder="Enter name"
                 />
@@ -56,7 +56,7 @@ const RegisterScreen = () => {
                 />
                 <TextInput
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChangeText={(e) => setEmail(e)}
                     className="text-base"
                     placeholder="Enter email"
                 />
@@ -72,7 +72,7 @@ const RegisterScreen = () => {
                 <TextInput
                     secureTextEntry={true}
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChangeText={(e) => setPassword(e)}
                     className="text-base"
                     placeholder="Enter password"
                 />

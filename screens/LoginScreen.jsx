@@ -4,7 +4,7 @@ import { useState } from "react"
 import { useNavigation } from "@react-navigation/native"
 
 const LoginScreen = () => {
-    const [username, setUsername] = useState('')
+    const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const navigation = useNavigation()
     const handleNavigateToRegister = () => {
@@ -24,8 +24,8 @@ const LoginScreen = () => {
                     color="gray"
                 />
                 <TextInput
-                    value={username}
-                    onChange={(e)=>setUsername(e.target.value)}
+                    value={email}
+                    onChangeText={(e) =>setEmail(e)}
                     className="text-base"
                     placeholder="Enter username"
                 />
@@ -38,8 +38,9 @@ const LoginScreen = () => {
                     color="gray"
                 />
                 <TextInput
+                    secureTextEntry={true}
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChangeText={(e) => setPassword(e)}
                     className="text-base"
                     placeholder="Enter password"
                 />
@@ -51,7 +52,9 @@ const LoginScreen = () => {
                 </Pressable>
                 <Text className="text-blue-400 font-bold ml-auto"> Forgot password</Text>
             </View>
-            <Pressable className="mx-24 bg-sky-900 rounded-[4px] py-4">
+            <Pressable
+                onPress={handleLogin}
+                className="mx-24 bg-sky-900 rounded-[4px] py-4">
                 <Text className="text-center text-gray-100 font-extrabold text-base">Log In</Text>
             </Pressable>
         </SafeAreaView>
