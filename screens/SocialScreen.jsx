@@ -1,11 +1,11 @@
 import react from "react";
 import { SafeAreaView, Text, View } from "react-native";
 
-const SocialScreen = () => {
+const CreateScreen = () => {
     return (
         <SafeAreaView className="container px-4 w-full mx-auto">
-            <Text>SocialScreen</Text>
+            <Text>CreateScreen </Text>
         </SafeAreaView>
     )
 }
-export default SocialScreen
+export default CreateScreen

@@ -17,7 +17,7 @@ const LoginScreen = () => {
                 const token = await AsyncStorage.getItem("authToken")
                 if (token) {
                     setTimeout(() => {
-                        navigation.replace('Home')
+                        navigation.replace("Main")
                     }, 400)
                 }
             } catch (err) {

@@ -5,76 +5,69 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import RegisterScreen from "./screens/RegisterScreen";
 import HomeScreen from "./screens/HomeScreen";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { AntDesign, Entypo } from "@expo/vector-icons";
-import SocialScreen from "./screens/SocialScreen";
 import { Ionicons } from "@expo/vector-icons";
-import {
-  HeartFilled,
-  HeartOutlined,
-  HomeFilled,
-  HomeOutlined,
-  PlusOutlined,
-  UserOutlined
-} from "@ant-design/icons";
+import { Octicons } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
 import ActivityScreen from "./screens/ActivityScreen";
 import ProfileScreen from "./screens/ProfileScreen";
+import CreateScreen from "./screens/SocialScreen";
 
 const StackNavigator = () => {
   const Stack = createNativeStackNavigator();
   const Tab = createBottomTabNavigator();
   function BottomTabs() {
     return (
-      <Tab.Navigator>
+      <Tab.Navigator screenOptions={{ tabBarStyle: { padding: 10 } }}>
         <Tab.Screen
           name="Home"
           component={HomeScreen}
           options={{
-            tabBarLabel: "Home",
+            tabBarLabel: "",
             tabBarLabelStyle: { color: "black" },
             headerShown: false,
             tabBarIcon: ({ focused }) =>
               focused
-                ? <HomeOutlined size={24} color="black" />
-                : <HomeFilled size={24} color="black" />
+                ? <Ionicons name="home-sharp" size={24} color="black" />
+                : <Ionicons name="home-outline" size={24} color="black" />
           }}
         />
         <Tab.Screen
-          name="Social"
-          component={SocialScreen}
+          name="Create"
+          component={CreateScreen}
           options={{
-            tabBarLabel: "Create",
+            tabBarLabel: "",
             tabBarLabelStyle: { color: "black" },
             headerShown: false,
             tabBarIcon: ({ focused }) =>
               focused
-                ? <PlusOutlined size={24} color="black" />
-                : <PlusOutlined size={24} color="black" />
+                ? <Ionicons name="create" size={24} color="black" />
+                : <Ionicons name="create-outline" size={24} color="black" />
           }}
         />
         <Tab.Screen
           name="Activity"
           component={ActivityScreen}
           options={{
-            tabBarLabel: "Activity",
+            tabBarLabel: "",
             tabBarLabelStyle: { color: "black" },
             headerShown: false,
             tabBarIcon: ({ focused }) =>
               focused
-                ? <HeartOutlined size={24} color="black" />
-                : <HeartFilled size={24} color="black" />
+                ? <Ionicons name="heart-sharp" size={24} color="black" />
+                : <Ionicons name="heart-outline" size={24} color="black" />
           }}
         />
         <Tab.Screen
           name="Profile"
           component={ProfileScreen}
           options={{
-            tabBarLabel: "Profile",
+            tabBarLabel: "",
             tabBarLabelStyle: { color: "black" },
             headerShown: false,
             tabBarIcon: ({ focused }) =>
               focused
-                ? <UserOutlined size={24} color="black" />
-                : <UserOutlined size={24} color="black" />
+                ? <FontAwesome name="user-circle" size={24} color="black" />
+                : <FontAwesome name="user-circle-o" size={24} color="black" />
           }}
         />
       </Tab.Navigator>
@@ -82,7 +75,7 @@ const StackNavigator = () => {
   }
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
+      <Stack.Navigator>
         <Stack.Screen
           options={{ headerShown: false }}
           name="Login"
@@ -95,8 +88,8 @@ const StackNavigator = () => {
         />
         <Stack.Screen
           options={{ headerShown: false }}
-          name="Home"
-          component={HomeScreen}
+          name="Main"
+          component={BottomTabs}
         />
       </Stack.Navigator>
     </NavigationContainer>
