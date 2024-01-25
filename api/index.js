@@ -134,14 +134,117 @@ app.get("/user/:userId", (req, res) => {
   try {
     const loggedInUserId = req.params.userId;
     User.find({ _id: { $ne: loggedInUserId } })
-      .then((users) => {
+      .then(users => {
         res.status(200).json(users);
       })
-      .catch((err) => {
+      .catch(err => {
         console.log("Error :", err);
         res.status(500).json("Error");
       });
   } catch (err) {
     res.status(500).json({ message: "Error getting the users" });
+  }
+});
+
+// follow user
+app.post("/follow", async (req, res) => {
+  const { currentUserId, selectedUserId } = req.body;
+  try {
+    await User.findByIdAndUpdate(selectedUserId, {
+      $push: { followers: currentUserId }
+    });
+    res.status(200).json({ message: "Following successfully" });
+  } catch (err) {
+    console.log("Error :", err);
+    res.status(500).json({ message: "Error in following a user" });
+  }
+});
+
+// unfollow user
+app.post("/users/unfollow", async (req, res) => {
+  const { loggedInUserId, targetUserId } = req.body;
+  try {
+    await User.findByIdAndUpdate(targetUserId, {
+      $pull: { followers: loggedInUserId }
+    });
+    res.status(200).json({ message: "Unfollow sucessfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Error in unfollowing a user" });
+  }
+});
+
+// tao bai viet
+app.post("/create-post", async (req, res) => {
+  try {
+    const { content, userId } = req.body;
+    const newPostData = {
+      user: userId
+    };
+    if (content) {
+      newPostData.content = content;
+    }
+    const newPost = new Post(newPostData);
+    await newPost.save();
+    res.status(200).json({ message: "Post successfully" });
+  } catch (err) {
+    console.log("Error :", err);
+    res.status(500).json({ message: "Error creating post" });
+  }
+});
+
+// like bai viet
+app.put("/post/:postId/:userId/like", async (req, res) => {
+  try {
+    const postId = req.params.postId;
+    const userId = req.params.userId;
+    const post = await Post.findById(postId).populate("user", "name");
+    const updatedPost = await Post.findByIdAndUpdate(
+      postId,
+      { $addToSet: { likes: userId } },
+      { new: true }
+    );
+    if (!updatedPost) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+    updatedPost.user = post.user;
+    res.json(updatedPost);
+  } catch (err) {
+    console.log("Error :", err);
+    res.status(500).json({ message: "Error liking post" });
+  }
+});
+
+// unlike bai viet
+app.put("/posts/:postId/:userId/unlike", async (req, res) => {
+  try {
+    const postId = req.params.postId;
+    const userId = req.params.userId;
+    const post = await Post.findById(postId).populate("user", "name");
+    const updatedPost = await Post.findByIdAndUpdate(
+      postId,
+      { $pull: { likes: userId } },
+      { new: true }
+    );
+    updatedPost.user = post.user;
+    if (!updatedPost) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+    res.json(updatedPost);
+  } catch (err) {
+    console.log("Error :", err);
+    res.status(500).json({ message: "Error unliking post" });
+  }
+});
+
+// lay danh sach tat ca cac bai viet
+app.get("/get-posts", async (req, res) => {
+  try {
+    const posts = await Post.find()
+      .populate("user", "name")
+      .sort({ createdAt: -1 });
+    res.status(200).json(posts);
+  } catch (err) {
+    console.log("Error :", err);
+    res.status(500).json({ message: "Error getting all posts" });
   }
 });
