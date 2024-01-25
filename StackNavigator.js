@@ -13,9 +13,11 @@ import {
   HeartOutlined,
   HomeFilled,
   HomeOutlined,
-  PlusOutlined
+  PlusOutlined,
+  UserOutlined
 } from "@ant-design/icons";
 import ActivityScreen from "./screens/ActivityScreen";
+import ProfileScreen from "./screens/ProfileScreen";
 
 const StackNavigator = () => {
   const Stack = createNativeStackNavigator();
@@ -60,6 +62,19 @@ const StackNavigator = () => {
               focused
                 ? <HeartOutlined size={24} color="black" />
                 : <HeartFilled size={24} color="black" />
+          }}
+        />
+        <Tab.Screen
+          name="Profile"
+          component={ProfileScreen}
+          options={{
+            tabBarLabel: "Profile",
+            tabBarLabelStyle: { color: "black" },
+            headerShown: false,
+            tabBarIcon: ({ focused }) =>
+              focused
+                ? <UserOutlined size={24} color="black" />
+                : <UserOutlined size={24} color="black" />
           }}
         />
       </Tab.Navigator>
