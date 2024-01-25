@@ -215,7 +215,7 @@ app.put("/post/:postId/:userId/like", async (req, res) => {
 });
 
 // unlike bai viet
-app.put("/posts/:postId/:userId/unlike", async (req, res) => {
+app.put("/post/:postId/:userId/unlike", async (req, res) => {
   try {
     const postId = req.params.postId;
     const userId = req.params.userId;
@@ -246,5 +246,20 @@ app.get("/get-posts", async (req, res) => {
   } catch (err) {
     console.log("Error :", err);
     res.status(500).json({ message: "Error getting all posts" });
+  }
+});
+
+// profile user
+app.get("/profile/:userId", async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    return res.status(200).json({ user });
+  } catch (err) {
+    console.log("Error :", err);
+    res.status(500).json({ message: "Error getting profile" });
   }
 });

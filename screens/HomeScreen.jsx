@@ -42,6 +42,29 @@ const HomeScreen = () => {
         getListPosts()
     }, [])
     )
+
+    const handleLike = async (postId) => {
+        try {
+            const res = await axios.put(`http://localhost:3000/post/${postId}/${userId}/like`)
+            const updatedPost = res.data
+            const updatedPosts = posts?.map((e) =>
+                e?._id === updatedPost._id ? updatedPost : e)
+            setPosts(updatedPosts)
+        } catch (err) {
+            console.log('Error liking the post', err)
+        }
+    }
+    const handleUnLike = async (postId) => {
+        try {
+            const res = await axios.put(`http://localhost:3000/post/${postId}/${userId}/unlike`)
+            const updatedPost = res.data
+            const updatedPosts = posts?.map((e) =>
+                e?._id === updatedPost._id ? updatedPost : e)
+            setPosts(updatedPosts)
+        } catch (err) {
+            console.log('Error unliking the post', err)
+        }
+    }
     // CONSOLE HERE
     console.log(posts)
 
@@ -86,13 +109,27 @@ const HomeScreen = () => {
                             </View>
 
                             <View className="flex flex-row justify-between items-center gap-2 border border-gray-200 my-2 pb-2 px-4">
-                                <AntDesign
-                                    handle={() => handleLike()}
-                                    name="like2"
+                                {e?.likes?.includes(userId) ? (
+                                    <AntDesign
+                                        onPress={() => handleUnLike(e?._id)}
+                                        name="like1"
+                                        size={24}
+                                        color="#0a56d2" />
+                                ) : (
+                                    <AntDesign
+                                        onPress={() => handleLike(e?._id)}
+                                        name="like2"
+                                        size={24}
+                                        color="#323232" />
+                                )}
+                                <FontAwesome
+                                    name="comment-o"
                                     size={24}
                                     color="#323232" />
-                                <FontAwesome name="comment-o" size={24} color="#323232" />
-                                <Fontisto name="share-a" size={20} color="#323232" />
+                                <Fontisto
+                                    name="share-a"
+                                    size={20}
+                                    color="#323232" />
                             </View>
 
                             <View className="bg-gray-300 w-full h-[7px] mb-8"
