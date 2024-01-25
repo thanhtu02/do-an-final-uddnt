@@ -10,7 +10,7 @@ import { Octicons } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
 import ActivityScreen from "./screens/ActivityScreen";
 import ProfileScreen from "./screens/ProfileScreen";
-import CreateScreen from "./screens/SocialScreen";
+import CreateScreen from "./screens/CreateScreen";
 
 const StackNavigator = () => {
   const Stack = createNativeStackNavigator();
@@ -27,8 +27,8 @@ const StackNavigator = () => {
             headerShown: false,
             tabBarIcon: ({ focused }) =>
               focused
-                ? <Ionicons name="home-sharp" size={24} color="black" />
-                : <Ionicons name="home-outline" size={24} color="black" />
+                ? <Ionicons name="home-sharp" size={22} color="black" />
+                : <Ionicons name="home-outline" size={22} color="black" />
           }}
         />
         <Tab.Screen
@@ -66,8 +66,8 @@ const StackNavigator = () => {
             headerShown: false,
             tabBarIcon: ({ focused }) =>
               focused
-                ? <FontAwesome name="user-circle" size={24} color="black" />
-                : <FontAwesome name="user-circle-o" size={24} color="black" />
+                ? <FontAwesome name="user" size={22} color="black" />
+                : <FontAwesome name="user-o" size={20} color="black" />
           }}
         />
       </Tab.Navigator>

@@ -43,23 +43,21 @@ app.get("/", (req, res) => {
 app.post("/register", async (req, res) => {
   try {
     const { name, email, password } = req.body;
-    const existingUser = await User.findOne({email});
+    const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: "Email already registered" });
     }
     // create new user here
-    const newUser = new User({name,email,password});
+    const newUser = new User({ name, email, password });
     // store verification token
     newUser.verificationToken = crypto.randomBytes(20).toString("hex");
     // save user to db
     await newUser.save();
     // send verification email to user
     sendVerificationEmail(newUser.email, newUser.verificationToken);
-    res
-      .status(200)
-      .json({
-        message: "Register successful, please check your email for verification"
-      });
+    res.status(200).json({
+      message: "Register successful, please check your email for verification"
+    });
   } catch (error) {
     console.log("Error registering user: ", error);
     res.status(500).json({ message: "Error registering user" });
@@ -67,66 +65,83 @@ app.post("/register", async (req, res) => {
 });
 
 const sendVerificationEmail = async (email, verificationToken) => {
-    // create nodemailer transporter 
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: "hanhee1406@gmail.com",
-        pass: "avliwgjxjzyzxhik"
-      }
-    });
-    // compose email message
-    const mailOptions = {
-        from: "socialnetwork.com",
-        to: email,
-        subject: "Email Verification",
-        text: `Please click the following link to verify your email http://localhost:3000/verify/${verificationToken}`
+  // create nodemailer transporter
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: "hanhee1406@gmail.com",
+      pass: "avliwgjxjzyzxhik"
     }
-    try {
-        await transporter.sendMail(mailOptions)
-    } catch (error) {
-        console.log("Error sending email: " , error)
-    }
-}
+  });
+  // compose email message
+  const mailOptions = {
+    from: "socialnetwork.com",
+    to: email,
+    subject: "Email Verification",
+    text: `Please click the following link to verify your email http://localhost:3000/verify/${verificationToken}`
+  };
+  try {
+    await transporter.sendMail(mailOptions);
+  } catch (error) {
+    console.log("Error sending email: ", error);
+  }
+};
 
-app.get('/verify/:token', async (req, res) => {
-    try {
-        const token = req.params.token
-        const user = await User.findOne({ verificationToken:token })
-        if (!user) {
-            return res.status(400).json({message: 'Invalid token'})
-        }
-        user.verified = true
-        user.verificationToken = undefined
-        await user.save()
-        res.status(200).json({message: "Email verify successfully"})
-    } catch (error) {
-        console.log('Error getting token', error)
-        res.status(500).json({message: "Email verification failed"})
+app.get("/verify/:token", async (req, res) => {
+  try {
+    const token = req.params.token;
+    const user = await User.findOne({ verificationToken: token });
+    if (!user) {
+      return res.status(400).json({ message: "Invalid token" });
     }
-})
+    user.verified = true;
+    user.verificationToken = undefined;
+    await user.save();
+    res.status(200).json({ message: "Email verify successfully" });
+  } catch (error) {
+    console.log("Error getting token", error);
+    res.status(500).json({ message: "Email verification failed" });
+  }
+});
 
 // secrect key here
 const generateSecretKey = () => {
-    const secrectKey = crypto.randomBytes(32).toString('hex')
-    return secrectKey
-}
-const secrectKey = generateSecretKey()
+  const secrectKey = crypto.randomBytes(32).toString("hex");
+  return secrectKey;
+};
+const secrectKey = generateSecretKey();
 
 //login
-app.post('/login', async (req, res) => {
-    try {
-        const { email, password } = req.body
-        const user = await User.findOne({email})
-        if (!user) {
-            return res.status(404).json({message: "Invalid email"})
-        }
-        if (user.password !== password) {
-          return res.status(404).json({ message: "Invalid password" });
-        }
-        const token = jwt.sign({ userId: user._id }, secrectKey)
-        res.status(200).json({token})
-    } catch (error) {
-        res.status(500).json({ message: "Login failed" });
+app.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "Invalid email" });
     }
-})
+    if (user.password !== password) {
+      return res.status(404).json({ message: "Invalid password" });
+    }
+    const token = jwt.sign({ userId: user._id }, secrectKey);
+    res.status(200).json({ token });
+  } catch (error) {
+    res.status(500).json({ message: "Login failed" });
+  }
+});
+
+// lay danh sach user tru tk cua minh dang dang nhap
+app.get("/user/:userId", (req, res) => {
+  try {
+    const loggedInUserId = req.params.userId;
+    User.find({ _id: { $ne: loggedInUserId } })
+      .then((users) => {
+        res.status(200).json(users);
+      })
+      .catch((err) => {
+        console.log("Error :", err);
+        res.status(500).json("Error");
+      });
+  } catch (err) {
+    res.status(500).json({ message: "Error getting the users" });
+  }
+});

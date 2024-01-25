@@ -1,11 +1,11 @@
-import react from "react";
+import React from "react";
 import { SafeAreaView, Text, View } from "react-native";
 
 const ProfileScreen = () => {
     return (
-        <SafeAreaView className="container px-4 w-full mx-auto">
+        <View className="container px-4 w-full mx-auto">
             <Text> ProfileScreen </Text>
-        </SafeAreaView>
+        </View>
     )
 }
 export default ProfileScreen
