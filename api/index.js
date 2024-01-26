@@ -87,6 +87,7 @@ const sendVerificationEmail = async (email, verificationToken) => {
   }
 };
 
+// lay token cua user 
 app.get("/verify/:token", async (req, res) => {
   try {
     const token = req.params.token;
@@ -142,7 +143,18 @@ app.get("/user/:userId", (req, res) => {
         res.status(500).json("Error");
       });
   } catch (err) {
-    res.status(500).json({ message: "Error getting the users" });
+    res.status(500).json({ message: "Error getting the users except me" });
+  }
+});
+
+// lay danh sach tat ca user
+app.get("/get-users", async (req, res) => {
+  try {
+    const users = await User.find().select("name").sort({ createdAt: -1 });
+    res.status(200).json(users);
+  } catch (err) {
+    console.error("Error getting all users:", err);
+    res.status(500).json({ message: "Error getting all users" });
   }
 });
 
@@ -189,6 +201,23 @@ app.post("/create-post", async (req, res) => {
   } catch (err) {
     console.log("Error :", err);
     res.status(500).json({ message: "Error creating post" });
+  }
+});
+
+
+// xoa bai viet
+app.delete("/post/:postId", async (req, res) => {
+  try {
+    const postId = req.params.postId;
+    const post = await Post.findById(postId);
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+    await post.deleteOne();
+    res.status(200).json({ message: "Post deleted successfully" });
+  } catch (err) {
+    console.error("Error deleting post:", err);
+    res.status(500).json({ message: "Error deleting post" });
   }
 });
 
@@ -298,5 +327,20 @@ app.get("/post/:postId/replies", async (req, res) => {
   } catch (err) {
     console.error("Error fetching replies:", err);
     res.status(500).json({ message: "Error  fetching replies" });
+  }
+});
+
+// lay nhung followers cua user
+app.get("/followed-users/:userId", async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const user = await User.findById(userId).populate("followers", "name"); 
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.status(200).json(user.followers);
+  } catch (err) {
+    console.error("Error fetching followed users:", err);
+    res.status(500).json({ message: "Error fetching followed users" });
   }
 });

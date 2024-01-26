@@ -6,7 +6,7 @@ import { Buffer } from "buffer";
 import { UserContext } from "../store/UserContext";
 import { useState } from "react";
 import axios from "axios";
-import { AntDesign, FontAwesome } from '@expo/vector-icons';
+import { AntDesign, EvilIcons, FontAwesome } from '@expo/vector-icons';
 import { Fontisto } from '@expo/vector-icons';
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useCallback } from "react";
@@ -36,6 +36,17 @@ const HomeScreen = () => {
             console.log("Error fetching posts", err)
         }
     }
+    const handleDeletePost = async (postId) => {
+        try {
+            await axios.delete(`http://localhost:3000/post/${postId}`, {
+                data: { userId: userId },
+            });
+            getListPosts();
+        } catch (err) {
+            console.log('Error deleting the post', err);
+        }
+    };
+    
     useEffect(() => {
         getListPosts()
     }, [])
@@ -68,14 +79,9 @@ const HomeScreen = () => {
         }
     }
 
-    const handleReply = (postId, content, user_created, handleCloseDetailReply) => {
-        navigation.navigate("DetailReply", { postId, content, userId, user_created, handleCloseDetailReply });
+    const handleReply = (postId, content, user_created) => {
+        navigation.navigate("DetailReply", { postId, content, userId, user_created });
         setSelectedPost({ postId });
-    };
-
-    const handleCloseDetailReply = () => {
-        setSelectedPost('');
-        getListPosts();
     };
 
     // CONSOLE HERE
@@ -98,17 +104,26 @@ const HomeScreen = () => {
                     return (
                         <View key={index}
                             className="">
-                            <View className="flex flex-row items-center gap-2 px-4">
-                                <Image
-                                    className="w-10 h-10 rounded-full"
-                                    source={{
-                                        uri: "https://s.net.vn/xAeo"
-                                    }} />
-                                <Text className="text-base font-medium "> {e?.user?.name}</Text>
+                            <View className="flex flex-row items-center px-4">
+                                <View className="flex flex-row items-center gap-2 mr-auto">
+                                    <Image
+                                        className="w-10 h-10 rounded-full"
+                                        source={{
+                                            uri: "https://s.net.vn/xAeo"
+                                        }} />
+                                    <Text className="text-base font-medium "> {e?.user?.name}</Text>
+                                </View>
+                                {e?.user?._id === userId && (
+                                    <EvilIcons
+                                        onPress={() => handleDeletePost(e?._id)}
+                                        name="close"
+                                        size={24}
+                                        color="black" />
+                                )}
                             </View>
 
                             <View className="my-6 px-4">
-                                <Text className="text-base font-normal"> {e?.content}</Text>
+                                <Text className="text-base font-normal"> {e?.content} </Text>
                             </View>
 
                             <View className="flex flex-row items-center gap-4 px-4">

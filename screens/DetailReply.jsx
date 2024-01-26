@@ -8,10 +8,11 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 
 const DetailReply = ({ route }) => {
-    const { postId, content, userId, user_created, handleCloseDetailReply } = route.params;
+    const { postId, content, userId, user_created } = route.params;
     const [replies, setReplies] = useState([]);
     const [reply, setReply] = useState('');
-    const navigation = useNavigation(); 
+    const navigation = useNavigation();
+    const [users, setUsers] = useState([]);
     const handleSubmitReply = () => {
         if (!userId) {
             console.log('Invalid userId:', userId);
@@ -46,19 +47,37 @@ const DetailReply = ({ route }) => {
     }, []);
 
     const handleWayBack = () => {
-        navigation.goBack(); 
+        navigation.goBack();
     };
 
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const response = await axios.get('http://localhost:3000/get-users');
+                setUsers(response.data);
+            } catch (error) {
+                console.error('Error fetching users:', error);
+            }
+        };
+        fetchUsers();
+    }, []);
+
+    const getUsername = () => {
+        const user = users.find((user) => user._id === userId);
+        return user?.name || 'Unknown User'; 
+    };
+    const username = getUsername();
+
     // CONSOLE HERE
-    console.log(route)
+    console.log(username)
     return (
         <ScrollView className="">
-            <View className="container px-4 w-full mx-auto border border-gray-300 pt-[50px] pb-2">
+            <View className="container px-4 w-full mx-auto border border-[#D0D0D0] pt-[50px] pb-2">
                 <Ionicons
                     onPress={handleWayBack}
                     name="caret-back-circle-outline"
                     size={36}
-                    color="black" />
+                    color="#252525" />
             </View>
             <View className="container px-4 mx-auto w-full mt-4">
                 <View className="flex flex-row items-center gap-2 px-4">
@@ -99,10 +118,10 @@ const DetailReply = ({ route }) => {
                                         source={{
                                             uri: "https://s.net.vn/xAeo"
                                         }} />
-                                    <Text className="text-base font-medium ">{userId}</Text>
+                                    <Text className="text-base font-medium ">{username}</Text>
                                 </View>
                                 <Text className="text-sm pt-[7px]">{e?.content}</Text>
-                               </View>
+                            </View>
                         </View>
                     ))}
                 </View>

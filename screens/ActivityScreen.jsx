@@ -33,8 +33,9 @@ const ActivityScreen = () => {
         }
         getListUsers()
     }, [])
+
     // CONSOLE HERE
-    console.log('users:', users)
+
     return (
         <ScrollView className="container px-4 w-full mx-auto mt-[50px]">
             <Text className="font-bold text-2xl mb-4">Activity</Text>
@@ -62,31 +63,25 @@ const ActivityScreen = () => {
                                 selected === 'people' ? { color: 'white' } : { color: 'black' }
                             ]}> People </Text>
                     </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={() => handleSelectButton('requests')}
-                        className="flex-1 flex-row justify-center items-center bg-white rounded-lg py-3 border border-gray-200"
-                        style={[
-                            selected === 'requests' ? { backgroundColor: 'black' } : null
-                        ]}>
-                        <Text className="text-center font-bold text-lg"
-                            style={[
-                                selected === 'requests' ? { color: 'white' } : { color: 'black' }
-                            ]}> Requests </Text>
-                    </TouchableOpacity>
                 </View>
 
                 <View className="mt-6">
-                    {selected === 'people' && (
+                    {selected === 'all' && (
                         <View>
-                            {users?.map((item, index) => {
-                                return (
-                                    <User
-                                        key={index}
-                                        item={item} />
-                                )
-                            })}
+                            {users?.map((item, index) => (
+                                <User
+                                    key={index}
+                                    item={item}
+                                />
+                            ))}
                         </View>
                     )}
+                    {/* {selected === 'people' && (
+                        <View>
+                            
+                        </View>
+                    )} */}
+                    
                 </View>
             </View>
         </ScrollView>
