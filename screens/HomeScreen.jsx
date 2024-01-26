@@ -10,8 +10,6 @@ import { AntDesign, FontAwesome } from '@expo/vector-icons';
 import { Fontisto } from '@expo/vector-icons';
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useCallback } from "react";
-import DetailReply from "./DetailReply";
-
 
 const HomeScreen = () => {
     const { userId, setUserId } = useContext(UserContext);
@@ -70,19 +68,20 @@ const HomeScreen = () => {
         }
     }
 
-    const handleReply = async (postId, content, userId, handleCloseDetailReply ) => {
-        navigation.navigate("DetailReply", { postId, content, userId });
-        setSelectedPost({postId});
-    }
+    const handleReply = (postId, content, user_created, handleCloseDetailReply) => {
+        navigation.navigate("DetailReply", { postId, content, userId, user_created, handleCloseDetailReply });
+        setSelectedPost({ postId });
+    };
 
     const handleCloseDetailReply = () => {
         setSelectedPost('');
-    }
-    // CONSOLE HERE
-    // console.log(selectedPost)
+        getListPosts();
+    };
 
+    // CONSOLE HERE
+    console.log('userid: ', userId)
     return (
-        <ScrollView className="container w-full mx-auto mt-[50px]">
+        <ScrollView className="container w-full mx-auto mt-[50px] mb-2 ">
             <View className="flex flex-row justify-center items-center">
                 <Image
                     style={{
@@ -94,7 +93,7 @@ const HomeScreen = () => {
                     }} />
             </View>
 
-            <View className="mt-2 border border-[#D0D0D0] h-screen pt-8 mb-[220px]" >
+            <View className="mt-2 border border-[#D0D0D0] h-screen pt-8 mb-[400px] pb-2" >
                 {posts.map((e, index) => {
                     return (
                         <View key={index}

@@ -3,26 +3,29 @@ import { Image, ScrollView, Text, TextInput, TouchableOpacity, View } from 'reac
 import React from 'react'
 import { useState } from 'react';
 import axios from 'axios';
+import { useEffect } from 'react';
+import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
 const DetailReply = ({ route }) => {
-    const { postId, content, userId } = route.params;
+    const { postId, content, userId, user_created, handleCloseDetailReply } = route.params;
     const [replies, setReplies] = useState([]);
     const [reply, setReply] = useState('');
+    const navigation = useNavigation(); 
     const handleSubmitReply = () => {
-        if (!userId || !userId._id) {
+        if (!userId) {
             console.log('Invalid userId:', userId);
             return;
         }
         const replyData = {
-            userId: userId._id,
+            userId: userId,
         };
         if (reply) {
             replyData.reply = reply;
         }
-        axios.post(`http://localhost:3000/post/${postId}/${userId._id}/create-reply`, replyData)
+        axios.post(`http://localhost:3000/post/${postId}/${userId}/create-reply`, replyData)
             .then((res) => {
                 setReply('');
-                // After successfully creating a reply, fetch and update the replies
                 fetchReplies();
             })
             .catch((err) => {
@@ -30,7 +33,6 @@ const DetailReply = ({ route }) => {
             });
     };
     const fetchReplies = () => {
-        // Fetch replies from the server
         axios.get(`http://localhost:3000/post/${postId}/replies`)
             .then((res) => {
                 setReplies(res.data);
@@ -40,46 +42,67 @@ const DetailReply = ({ route }) => {
             });
     };
     useEffect(() => {
-        // Fetch replies when the component mounts
         fetchReplies();
     }, []);
-    console.log(route.params)
+
+    const handleWayBack = () => {
+        navigation.goBack(); 
+    };
+
+    // CONSOLE HERE
+    console.log(route)
     return (
-        <ScrollView className="mt-[50px]">
-            <View className="container px-4 mx-auto w-full">
+        <ScrollView className="">
+            <View className="container px-4 w-full mx-auto border border-gray-300 pt-[50px] pb-2">
+                <Ionicons
+                    onPress={handleWayBack}
+                    name="caret-back-circle-outline"
+                    size={36}
+                    color="black" />
+            </View>
+            <View className="container px-4 mx-auto w-full mt-4">
                 <View className="flex flex-row items-center gap-2 px-4">
                     <Image
                         className="w-10 h-10 rounded-full"
                         source={{
                             uri: "https://s.net.vn/xAeo"
                         }} />
-                    <Text className="text-base font-medium ">{userId?.name}</Text>
+                    <Text className="text-base font-medium ">{user_created?.name}</Text>
                 </View>
                 <View className="my-6 px-4">
                     <Text className="text-base font-normal">{content}</Text>
                 </View>
 
-                {/* Input field for reply */}
                 <TextInput
-                    style={{ height: 40, borderColor: 'gray', borderWidth: 1, marginTop: 10, marginBottom: 10 }}
+                    className="px-2 py-4"
                     placeholder="Enter your reply..."
+                    placeholderTextColor="#4b4b4b"
                     value={reply}
                     onChangeText={(e) => setReply(e)}
                 />
 
-                {/* Button to submit reply */}
                 <TouchableOpacity
-                    onPress={handleSubmitReply} 
+                    onPress={handleSubmitReply}
                     className="bg-[#0a56d2] py-3 rounded-lg"
                 >
                     <Text className="text-white font-bold text-center">Reply</Text>
                 </TouchableOpacity>
 
-                <View className="mt-4">
-                    <Text> Replies </Text>
+                <View className="mt-6">
+                    <Text className="mb-1 text-sm font-light"> All replies </Text>
                     {replies.map((e) => (
                         <View key={e._id}>
-                            <Text>{e?.content}</Text>
+                            <View className="flex flex-row items-center gap-2 px-0">
+                                <View className="flex flex-row items-center gap-2">
+                                    <Image
+                                        className="w-8 h-8 rounded-full"
+                                        source={{
+                                            uri: "https://s.net.vn/xAeo"
+                                        }} />
+                                    <Text className="text-base font-medium ">{userId}</Text>
+                                </View>
+                                <Text className="text-sm pt-[7px]">{e?.content}</Text>
+                               </View>
                         </View>
                     ))}
                 </View>

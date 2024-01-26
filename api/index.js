@@ -264,6 +264,7 @@ app.get("/profile/:userId", async (req, res) => {
   }
 });
 
+
 // tao comment bai viet
 app.post("/post/:postId/:userId/create-reply", async (req, res) => {
   try {
@@ -286,7 +287,7 @@ app.post("/post/:postId/:userId/create-reply", async (req, res) => {
 });
 
 // lay danh sach tat ca comment cua 1 bai viet 
-router.get("/post/:postId/replies", async (req, res) => {
+app.get("/post/:postId/replies", async (req, res) => {
   try {
     const postId = req.params.postId;
     const post = await Post.findById(postId);
@@ -296,6 +297,6 @@ router.get("/post/:postId/replies", async (req, res) => {
     res.json(post.replies);
   } catch (err) {
     console.error("Error fetching replies:", err);
-    res.status(500).json({ message: "Internal Server Error" });
+    res.status(500).json({ message: "Error  fetching replies" });
   }
 });
