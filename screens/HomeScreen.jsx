@@ -8,13 +8,16 @@ import { useState } from "react";
 import axios from "axios";
 import { AntDesign, FontAwesome } from '@expo/vector-icons';
 import { Fontisto } from '@expo/vector-icons';
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useCallback } from "react";
+import DetailReply from "./DetailReply";
 
 
 const HomeScreen = () => {
     const { userId, setUserId } = useContext(UserContext);
     const [posts, setPosts] = useState([])
+    const [selectedPost, setSelectedPost] = useState('');
+    const navigation = useNavigation()
     useEffect(() => {
         const getListUsers = async () => {
             const token = await AsyncStorage.getItem("authToken")
@@ -54,6 +57,7 @@ const HomeScreen = () => {
             console.log('Error liking the post', err)
         }
     }
+
     const handleUnLike = async (postId) => {
         try {
             const res = await axios.put(`http://localhost:3000/post/${postId}/${userId}/unlike`)
@@ -65,8 +69,17 @@ const HomeScreen = () => {
             console.log('Error unliking the post', err)
         }
     }
+
+    const handleReply = async (postId, content, userId, handleCloseDetailReply ) => {
+        navigation.navigate("DetailReply", { postId, content, userId });
+        setSelectedPost({postId});
+    }
+
+    const handleCloseDetailReply = () => {
+        setSelectedPost('');
+    }
     // CONSOLE HERE
-    console.log(posts)
+    // console.log(selectedPost)
 
     return (
         <ScrollView className="container w-full mx-auto mt-[50px]">
@@ -81,7 +94,7 @@ const HomeScreen = () => {
                     }} />
             </View>
 
-            <View className="mt-2 border border-[#D0D0D0] h-screen pt-8" >
+            <View className="mt-2 border border-[#D0D0D0] h-screen pt-8 mb-[220px]" >
                 {posts.map((e, index) => {
                     return (
                         <View key={index}
@@ -123,6 +136,7 @@ const HomeScreen = () => {
                                         color="#323232" />
                                 )}
                                 <FontAwesome
+                                    onPress={() => handleReply(e?._id, e?.content, e?.user)}
                                     name="comment-o"
                                     size={24}
                                     color="#323232" />
@@ -134,7 +148,6 @@ const HomeScreen = () => {
 
                             <View className="bg-gray-300 w-full h-[7px] mb-8"
                             />
-
                         </View>
                     )
                 })}

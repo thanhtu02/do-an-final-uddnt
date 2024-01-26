@@ -11,6 +11,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import ActivityScreen from "./screens/ActivityScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import CreateScreen from "./screens/CreateScreen";
+import DetailReply from "./screens/DetailReply";
 
 const StackNavigator = () => {
   const Stack = createNativeStackNavigator();
@@ -90,6 +91,11 @@ const StackNavigator = () => {
           options={{ headerShown: false }}
           name="Main"
           component={BottomTabs}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="DetailReply"
+          component={DetailReply}
         />
       </Stack.Navigator>
     </NavigationContainer>

@@ -4,10 +4,26 @@ import { useState } from "react";
 import { useContext } from "react";
 import { UserContext } from "../store/UserContext";
 import axios from "axios";
+import { useNavigation } from "@react-navigation/native";
+import { useEffect } from "react";
 
 const CreateScreen = () => {
     const { userId, setUserId } = useContext(UserContext)
     const [content, setContent] = useState('')
+    const [user, setUser] = useState('')
+    const navigation = useNavigation()
+    useEffect(() => {
+        const getProfileUser = async () => {
+            try {
+                const res = await axios.get(`http://localhost:3000/profile/${userId}`)
+                const { user } = res.data
+                setUser(user)
+            } catch (err) {
+                console.log('Error getting profile :', err)
+            }
+        }
+        getProfileUser()
+    })
     const handlePost = () => {
         const postData = {
             userId,
@@ -30,7 +46,7 @@ const CreateScreen = () => {
                         source={{
                             uri: "https://s.net.vn/xAeo"
                         }} />
-                    <Text> user </Text>
+                    <Text className="text-lg font-medium"> {user?.name} </Text>
                 </View>
 
                 <View className="mt-4">
@@ -42,11 +58,14 @@ const CreateScreen = () => {
                         multiline />
                 </View>
 
-                <Button
-                    className=""
-                    title="Share"
-                    onPress={handlePost}
-                />
+                <View className="bg-black w-full mt-4 rounded-[8px] py-1">
+                    <Button
+                        title="Share"
+                        color="white"
+                        accessibilityLabel="post"
+                        onPress={handlePost}
+                    />
+                </View>
             </View>
         </SafeAreaView>
     )

@@ -263,3 +263,39 @@ app.get("/profile/:userId", async (req, res) => {
     res.status(500).json({ message: "Error getting profile" });
   }
 });
+
+// tao comment bai viet
+app.post("/post/:postId/:userId/create-reply", async (req, res) => {
+  try {
+    const { reply, userId } = req.body;
+    const postId = req.params.postId;
+    const post = await Post.findById(postId);
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+    post.replies.push({
+      user: userId,
+      content: reply
+    });
+    await post.save();
+    res.status(200).json({ message: "Replying post successfully" });
+  } catch (err) {
+    console.log("Error:", err);
+    res.status(500).json({ message: "Error replying post" });
+  }
+});
+
+// lay danh sach tat ca comment cua 1 bai viet 
+router.get("/post/:postId/replies", async (req, res) => {
+  try {
+    const postId = req.params.postId;
+    const post = await Post.findById(postId);
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+    res.json(post.replies);
+  } catch (err) {
+    console.error("Error fetching replies:", err);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});

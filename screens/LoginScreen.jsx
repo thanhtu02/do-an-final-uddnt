@@ -41,7 +41,7 @@ const LoginScreen = () => {
             console.log(res.data)
             const token = res.data.token
             AsyncStorage.setItem('authToken', token)
-            navigation.navigate('Home')
+            navigation.navigate('Main')
         }).catch((err) => {
             Alert.alert('Login failed')
             console.log('Error :', err)
@@ -50,21 +50,21 @@ const LoginScreen = () => {
     return (
         <SafeAreaView className="container px-4 w-full mx-auto">
             <Text className="text-3xl font-bold text-center mt-[180px] mb-10 text-sky-900"> Login to Account</Text>
-            <View className="flex flex-row items-end gap-2 bg-white mx-8 p-2 pb-4 rounded-[8px] mb-8">
-                <MaterialIcons
-                    className=""
-                    name="people"
-                    size={19}
-                    color="gray"
-                />
+            <View className="flex flex-row items-center gap-2 bg-white rounded-[8px] mb-6 mx-4 p-2 mt-2">
+                    <MaterialIcons
+                        className=""
+                        name="people"
+                        size={19}
+                        color="gray"
+                    />
                 <TextInput
                     value={email}
                     onChangeText={(e) => setEmail(e)}
-                    className="text-base"
+                    className="text-sm h-full pb-1"
                     placeholder="Enter email"
                 />
             </View>
-            <View className="flex flex-row items-end gap-2 bg-white mx-8 p-2 pb-4 rounded-[8px]">
+            <View className="flex flex-row items-center gap-2 bg-white rounded-[8px] mx-4 p-2">
                 <MaterialIcons
                     className=""
                     name="lock"
@@ -75,7 +75,7 @@ const LoginScreen = () => {
                     secureTextEntry={true}
                     value={password}
                     onChangeText={(e) => setPassword(e)}
-                    className="text-base"
+                    className="text-sm h-full pb-1"
                     placeholder="Enter password"
                 />
             </View>
