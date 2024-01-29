@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, SafeAreaView, ScrollView, Text, View } from "react-native";
+import { Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { useEffect, useContext } from 'react'
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Buffer } from "buffer";
@@ -10,6 +10,7 @@ import { AntDesign, EvilIcons, FontAwesome } from '@expo/vector-icons';
 import { Fontisto } from '@expo/vector-icons';
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useCallback } from "react";
+import moment from "moment";
 
 const HomeScreen = () => {
     const { userId, setUserId } = useContext(UserContext);
@@ -84,6 +85,13 @@ const HomeScreen = () => {
         setSelectedPost({ postId });
     };
 
+    const navigateToProfileUser = (user_created) => {
+        console.log('create:',user_created._id)
+        if (user_created._id === userId) {
+            navigation.navigate("Profile")
+        }
+        else navigation.navigate("UserProfile", { user_created })
+    }
     // CONSOLE HERE
     console.log('userid: ', userId)
     return (
@@ -104,7 +112,8 @@ const HomeScreen = () => {
                     return (
                         <View key={index}
                             className="">
-                            <View className="flex flex-row items-center px-4">
+                            <TouchableOpacity className="flex flex-row items-center px-4"
+                            onPress={()=> navigateToProfileUser(e?.user)}>
                                 <View className="flex flex-row items-center gap-2 mr-auto">
                                     <Image
                                         className="w-10 h-10 rounded-full"
@@ -112,6 +121,7 @@ const HomeScreen = () => {
                                             uri: "https://s.net.vn/xAeo"
                                         }} />
                                     <Text className="text-base font-medium "> {e?.user?.name}</Text>
+                                    <Text className="text-xs ml-1">{moment(e?.createdAt).format('DD-MM-YYYY')} </Text>
                                 </View>
                                 {e?.user?._id === userId && (
                                     <EvilIcons
@@ -120,7 +130,7 @@ const HomeScreen = () => {
                                         size={24}
                                         color="black" />
                                 )}
-                            </View>
+                            </TouchableOpacity>
 
                             <View className="my-6 px-4">
                                 <Text className="text-base font-normal"> {e?.content} </Text>

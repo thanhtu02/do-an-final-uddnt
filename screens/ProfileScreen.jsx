@@ -23,7 +23,7 @@ const ProfileScreen = () => {
             }
         }
         getProfileUser()
-    })
+    },[])
 
     const clearAuthToken = async () => {
         await AsyncStorage.removeItem("authToken")

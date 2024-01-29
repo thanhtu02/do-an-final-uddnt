@@ -12,6 +12,7 @@ import ActivityScreen from "./screens/ActivityScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import CreateScreen from "./screens/CreateScreen";
 import DetailReply from "./screens/DetailReply";
+import UserProfileScreen from "./screens/UserProfile";
 
 const StackNavigator = () => {
   const Stack = createNativeStackNavigator();
@@ -96,6 +97,16 @@ const StackNavigator = () => {
           options={{ headerShown: false }}
           name="DetailReply"
           component={DetailReply}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="UserProfile"
+          component={UserProfileScreen}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="Profile"
+          component={ProfileScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>

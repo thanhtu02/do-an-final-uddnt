@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Image, SafeAreaView, Text, TextInput, View } from "react-native";
+import { Button, Image, Keyboard, SafeAreaView, Text, TextInput, View } from "react-native";
 import { useState } from "react";
 import { useContext } from "react";
 import { UserContext } from "../store/UserContext";
@@ -23,7 +23,7 @@ const CreateScreen = () => {
             }
         }
         getProfileUser()
-    })
+    },[])
     const handlePost = () => {
         const postData = {
             userId,
@@ -36,6 +36,7 @@ const CreateScreen = () => {
         }).catch((err) => {
             console.log('Error creating post :', err)
         })
+        Keyboard.dismiss();
     }
     return (
         <SafeAreaView>

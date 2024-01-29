@@ -123,6 +123,9 @@ app.post("/login", async (req, res) => {
     if (user.password !== password) {
       return res.status(404).json({ message: "Invalid password" });
     }
+    if (!user.verified) {
+       return res.status(404).json({ message: "Account is not verified" });
+    }
     const token = jwt.sign({ userId: user._id }, secrectKey);
     res.status(200).json({ token });
   } catch (error) {

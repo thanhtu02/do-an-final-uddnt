@@ -67,9 +67,10 @@ const ActivityScreen = () => {
 
                 <View className="mt-6">
                     {selected === 'all' && (
-                        <View>
+                        <View style={{ flex: 1, flexDirection: 'column', gap: 10 }}>
                             {users?.map((item, index) => (
                                 <User
+                                    className=""
                                     key={index}
                                     item={item}
                                 />
@@ -81,7 +82,7 @@ const ActivityScreen = () => {
                             
                         </View>
                     )} */}
-                    
+
                 </View>
             </View>
         </ScrollView>
